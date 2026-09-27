@@ -11,7 +11,7 @@ Sentinel is a hackathon research prototype that places Jev classification and Fa
 
 It includes a general assistant, a document assistant, and a pinned Pi read-only harness. It is not a claim that activation steering makes an abliterated model safe.
 
-[Evaluation report](evals/REPORT.md) · [Raw pilot results](evals/results/pilot.json) · [Policies](docs/policies.md) · [Steering compatibility](docs/steering.md) · [Security boundaries](SECURITY.md)
+[Demo walkthrough and pitch](docs/demo.md) · [Evaluation report](evals/REPORT.md) · [Raw pilot results](evals/results/pilot.json) · [Policies](docs/policies.md) · [Steering compatibility](docs/steering.md) · [Security boundaries](SECURITY.md)
 
 ## See the evidence
 
