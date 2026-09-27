@@ -15,8 +15,9 @@ image = (
     .env({"PATH": "/app/node_modules/.bin:/usr/local/bin:/usr/bin:/bin", "PYTHONPATH": "/app",
           "PI_OFFLINE": "1", "PI_SKIP_VERSION_CHECK": "1", "PI_TELEMETRY": "0",
           "PI_CODING_AGENT_DIR": "/tmp/pi-agent", "SENTINEL_WORKSPACE": "/workspace",
-          "SSL_CERT_FILE": "/etc/ssl/certs/ca-certificates.crt"})
+          "SENTINEL_REQUIRE_CLOUD_POLICY":"1", "SSL_CERT_FILE": "/etc/ssl/certs/ca-certificates.crt"})
     .add_local_file(here/"service.py", "/app/service.py")
+    .add_local_file(here/"cloud_policies.py", "/app/cloud_policies.py")
     .add_local_file(here/"steering.py", "/app/steering.py")
     .add_local_file(here/"policy_runtime.mjs", "/app/policy_runtime.mjs")
     .add_local_file(here/"pi-extension.mjs", "/app/pi-extension.mjs")
@@ -25,7 +26,7 @@ image = (
 )
 
 
-@app.function(image=image, secrets=[modal.Secret.from_name("sentinel-runtime")],
+@app.function(image=image, secrets=[modal.Secret.from_name("sentinel-runtime"), modal.Secret.from_name("sentinel-cloud-policy")],
               volumes={"/traces": traces}, max_containers=1, timeout=600, scaledown_window=120)
 @modal.concurrent(max_inputs=8)
 @modal.asgi_app()
@@ -35,7 +36,7 @@ def api():
     return make_api(model, traces)
 
 
-@app.function(image=image, secrets=[modal.Secret.from_name("sentinel-runtime")], timeout=60)
+@app.function(image=image, secrets=[modal.Secret.from_name("sentinel-runtime"), modal.Secret.from_name("sentinel-cloud-policy")], timeout=60)
 async def diagnostics():
     import httpx, os
     results = {}
@@ -49,7 +50,7 @@ async def diagnostics():
     return results
 
 
-@app.function(image=image, secrets=[modal.Secret.from_name("sentinel-runtime")],
+@app.function(image=image, secrets=[modal.Secret.from_name("sentinel-runtime"), modal.Secret.from_name("sentinel-cloud-policy")],
               volumes={"/traces": traces}, timeout=120, max_containers=1)
 async def flush_pending():
     """Operator-triggered at-least-once retry of durable, unacknowledged traces."""

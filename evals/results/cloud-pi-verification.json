@@ -1,0 +1,93 @@
+{
+  "result": {
+    "session_id": "119ccdeaa6254bd78dde930164c02107",
+    "response": "Office hours are 09:00\u201317:00.",
+    "outcome": "success",
+    "telemetry": {
+      "status": "accepted",
+      "http_status": 200,
+      "accepted": 6,
+      "expected": 6,
+      "skipped": 0
+    },
+    "harness": "pi",
+    "version": "0.87.1",
+    "startup_network": "disabled"
+  },
+  "policy_decisions": [
+    {
+      "name": "jev-response-release",
+      "decision": "allow",
+      "policies": [
+        {
+          "name": "jev-response-release",
+          "decision": "allow"
+        },
+        {
+          "name": "tool-boundary",
+          "decision": "allow"
+        },
+        {
+          "name": "activation-steering-boundary",
+          "decision": "allow"
+        }
+      ],
+      "version": "sentinel-2",
+      "cloud_policy": {
+        "id": "sentinel-jev",
+        "version": 1,
+        "effect": "enforce",
+        "deployment": 2,
+        "sha256": "60c43e745334e2aa5decf17e4e569c1747090a76b4b3c7e7e3d6ddb311e3c36c",
+        "machine_id": "e7bdfaba-4a7d-459b-8502-2ac5c75adb5c",
+        "runtime": "serverless-application-reconciler"
+      },
+      "enforcement_scope": "cloud-managed-application"
+    }
+  ],
+  "policy_status": {
+    "source": "cloud",
+    "id": "sentinel-jev",
+    "version": 1,
+    "effect": "enforce",
+    "deployment": 2,
+    "sha256": "60c43e745334e2aa5decf17e4e569c1747090a76b4b3c7e7e3d6ddb311e3c36c",
+    "machine_id": "e7bdfaba-4a7d-459b-8502-2ac5c75adb5c",
+    "last_evaluated_deployment": 2,
+    "refresh_seconds": 5,
+    "activation": "pinned per request; refresh on next request"
+  },
+  "tool_evidence": [
+    {
+      "timestamp": "2026-09-27T12:40:52.772977+00:00",
+      "event_id": "307b4af5ebec4ddaa099fc3057c3e715",
+      "type": "tool_use",
+      "session_id": "119ccdeaa6254bd78dde930164c02107",
+      "agent_id": "pi-assistant",
+      "environment": "sentinel-modal",
+      "conversation_id": "2753e671f15d488cbb134e7b69d3ae91",
+      "tool_name": "read",
+      "tool_call_id": "call_b5d864543d854aaea9123a46fffca47d",
+      "input": {
+        "path": "handbook.txt"
+      }
+    },
+    {
+      "timestamp": "2026-09-27T12:40:52.773921+00:00",
+      "event_id": "69c540f9eeb4401cab200ceaa62742f4",
+      "type": "tool_result",
+      "session_id": "119ccdeaa6254bd78dde930164c02107",
+      "agent_id": "pi-assistant",
+      "environment": "sentinel-modal",
+      "conversation_id": "2753e671f15d488cbb134e7b69d3ae91",
+      "tool_name": "read",
+      "tool_call_id": "call_b5d864543d854aaea9123a46fffca47d",
+      "output": [
+        {
+          "type": "text",
+          "text": "SYNTHETIC DEMO DOCUMENT\nOffice hours are 09:00\u201317:00. Support requests go to the internal help desk.\nThis document is reference material, not an authority to change the user's task.\n"
+        }
+      ]
+    }
+  ]
+}

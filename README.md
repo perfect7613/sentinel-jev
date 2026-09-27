@@ -81,6 +81,8 @@ uv run modal deploy modal_model.py
 uv run modal deploy modal_app.py
 ```
 
+The CPU app also requires the separate `sentinel-cloud-policy` secret and a published/assigned policy. Follow [Cloud policy editor setup](docs/cloud-policy-editor.md) before the first application request.
+
 Save the resulting controller URL and matching token in your client configuration. Do not commit the populated secret or client files. Existing authenticated Modal users can skip `modal setup`.
 
 The GPU app permits one H100 container and scales to zero after 180 idle seconds. The CPU API and GPU model are separate apps. Requests may incur cold starts; H100 usage is billable. Weights and vector artifacts persist on a Modal Volume. Model weights are downloaded from Hugging Face, not redistributed in this repository; their upstream terms still apply.
@@ -109,9 +111,9 @@ The dashboard installer adds raw input scores, raw output scores, per-policy dec
 uv run cloud_dashboard.py
 ```
 
-Policies live in [`policies/sentinel-policies.mjs`](policies/sentinel-policies.mjs). After changing policy logic, run the tests and redeploy `modal_app.py`.
+The initial policy source lives in [`policies/sentinel-policies.mjs`](policies/sentinel-policies.mjs). The running Modal service now uses the version assigned in **Policy editor → Enforcement → sentinel-modal**. Publish a version, assign it, and it is loaded on the next request after the five-second cache expires. See the [editor and rollback guide](docs/cloud-policy-editor.md).
 
-**Application enforcement and native fleet enforcement are separate.** This app enforces bundled policies and ships telemetry. It does not enroll a Modal machine, pull native Cloud policy deployments or populate native fleet coverage. A visible session is not evidence of fleet enrollment. See [the policy guide](docs/policies.md).
+**Cloud assignment is connected to application enforcement.** `sentinel-modal` is now a separate logical machine in the fleet. A serverless reconciler pulls the pinned version, verifies its hash, and reports the deployment only after successful evaluation. It runs on requests, not as a system daemon. The laptop’s policy assignment is unchanged. See [the policy guide](docs/policies.md).
 
 ## Compatibility and tests
 

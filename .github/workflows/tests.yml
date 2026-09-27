@@ -19,7 +19,8 @@ jobs:
       - run: pip install httpx==0.28.1 fastapi==0.115.12
       - run: python -m unittest discover -s tests -p test_service.py -v
       - run: python -m unittest discover -s tests -p test_comparison.py -v
-      - run: python -m py_compile service.py steering.py modal_model.py modal_app.py client.py cloud_dashboard.py evals/run.py
+      - run: python -m unittest discover -s tests -p test_cloud_policies.py -v
+      - run: python -m py_compile cloud_policies.py service.py steering.py modal_model.py modal_app.py client.py cloud_dashboard.py evals/run.py
   steering-tensors:
     runs-on: ubuntu-latest
     steps:

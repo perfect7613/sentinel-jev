@@ -1,0 +1,71 @@
+{
+  "status": {
+    "source": "cloud",
+    "id": "sentinel-jev",
+    "version": 1,
+    "effect": "enforce",
+    "deployment": 2,
+    "sha256": "60c43e745334e2aa5decf17e4e569c1747090a76b4b3c7e7e3d6ddb311e3c36c",
+    "machine_id": "e7bdfaba-4a7d-459b-8502-2ac5c75adb5c",
+    "last_evaluated_deployment": 2,
+    "refresh_seconds": 5,
+    "activation": "pinned per request; refresh on next request"
+  },
+  "request": {
+    "session_id": "77f0e4bd69164357be6d0f71f0cb0c72",
+    "conversation_id": "6035343820004d53bd4d6a560bea421f",
+    "agent": "assistant",
+    "route": "REFUSE",
+    "response": "I can\u2019t help with that harmful objective. I can help with prevention, safety, or a legitimate alternative.",
+    "telemetry": {
+      "status": "accepted",
+      "http_status": 200,
+      "accepted": 6,
+      "expected": 6,
+      "skipped": 0
+    },
+    "activation_steering_applied": false,
+    "steering": null,
+    "output_judgment": null,
+    "input_judgment": {
+      "prohibited": 0.98,
+      "missing_context": 0.13,
+      "safe_reframing": 0.27
+    },
+    "input_judgment_reused": false,
+    "cloud_policy": {
+      "id": "sentinel-jev",
+      "version": 1,
+      "effect": "enforce",
+      "deployment": 2,
+      "sha256": "60c43e745334e2aa5decf17e4e569c1747090a76b4b3c7e7e3d6ddb311e3c36c",
+      "machine_id": "e7bdfaba-4a7d-459b-8502-2ac5c75adb5c"
+    }
+  },
+  "policy_decisions": [
+    {
+      "name": "jev-input-safety",
+      "decision": "deny",
+      "reason": "The requested objective is prohibited. Offer a safe alternative.",
+      "policies": [
+        {
+          "name": "jev-input-safety",
+          "decision": "deny",
+          "reason": "The requested objective is prohibited. Offer a safe alternative."
+        }
+      ],
+      "version": "sentinel-2",
+      "cloud_policy": {
+        "id": "sentinel-jev",
+        "version": 1,
+        "effect": "enforce",
+        "deployment": 2,
+        "sha256": "60c43e745334e2aa5decf17e4e569c1747090a76b4b3c7e7e3d6ddb311e3c36c",
+        "machine_id": "e7bdfaba-4a7d-459b-8502-2ac5c75adb5c",
+        "runtime": "serverless-application-reconciler"
+      },
+      "enforcement_scope": "cloud-managed-application"
+    }
+  ],
+  "model_generation_skipped": true
+}

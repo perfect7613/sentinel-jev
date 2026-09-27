@@ -17,9 +17,9 @@ Missing/invalid judgments, required-policy absence, policy exceptions and timeou
 
 - **Sessions / Events / Hooks:** receive lifecycle, model/Jev calls, decisions and tool events from Modal.
 - **Analyze → Dashboards:** saved SQL queries expose raw input/output scores, individual policy names and reasons, decision counts, activation metadata and latency.
-- **Admin → Enforcement:** native enrolled machines and assigned/reported Cloud deployments. This project does **not** implement native fleet enrollment. Its policies are bundled and enforced by the application dispatcher.
+- **Admin → Enforcement:** `sentinel-modal` now appears as a separate logical service. The application pulls its pinned Cloud assignment and reports the deployment after actual policy evaluation. See [the editor workflow](cloud-policy-editor.md).
 
-The dashboard's `application-enforced` label describes the custom dispatcher, not a native machine deployment. Enrollment and publishing a Cloud policy are separate operations; copying a machine UUID or emitting a session does not enroll a workload.
+Historical traces used bundled policies. Current hook results identify `cloud-managed-application` and include `cloud_policy` version, deployment and SHA-256. Observe mode keeps bundled enforcement and records the Cloud verdict separately. The serverless reconciler implements Cloud assignment/pull/reporting without a system daemon.
 
 ## Transport
 

@@ -18,13 +18,13 @@ def request(path, body=None):
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser()
-    parser.add_argument("command",choices=["health","chat","document","pi","trace","steering","experiment"])
+    parser.add_argument("command",choices=["health","chat","document","pi","trace","steering","experiment","policies"])
     parser.add_argument("text",nargs="?",default="Explain a rainbow in one sentence.")
     parser.add_argument("--document",type=Path)
     parser.add_argument("--steering",choices=["off","auto","on"],default="off")
     parser.add_argument("--alpha",type=float,default=0.08)
     args=parser.parse_args()
-    if args.command in {"health","steering"}: result=request("/"+args.command)
+    if args.command in {"health","steering","policies"}: result=request("/"+args.command)
     elif args.command=="trace": result=request("/runs/"+args.text)
     elif args.command=="pi": result=request("/pi",{"prompt":args.text,"steering_mode":args.steering,"steering_alpha":args.alpha})
     else:

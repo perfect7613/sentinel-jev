@@ -6,7 +6,7 @@ The `/runs` endpoint contains full operator traces, including withheld candidate
 
 Raw prompts, generated candidates and tool data are transmitted to configured Jev and FailproofAI services. Use synthetic data for demos unless you have permission to process real data. The published pilot contains only synthetic cases. Screenshots are cropped to omit account identifiers; they are real captures, not recreated UIs.
 
-Policies execute in the application's dispatcher. No native FailproofAI fleet daemon or Cloud deployment assignment is claimed. Do not interpret a session in Cloud as proof of fleet enrollment.
+Policies execute in the application dispatcher using the verified Cloud assignment for the logical `sentinel-modal` machine. A dedicated pull-only credential fetches source; policy subprocesses receive no Cloud/Jev credentials. The reconciler reports a deployment only after actual evaluation. No system fleet daemon is used. Publishing alone does not deploy; see `docs/cloud-policy-editor.md`.
 
 Steering is experimental, defaults off, and cannot override input refusals or output release checks. A successful small pilot does not establish jailbreak robustness, model safety or safe autonomous tool execution.
 

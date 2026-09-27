@@ -10,13 +10,21 @@ const runtime = require(join(root, "dist/index.js"));
 const dist = pathToFileURL(join(root, "dist/index.js")).href;
 const shim = `import api from ${JSON.stringify(dist)}; export const {customPolicies,allow,deny,instruct}=api;`;
 const shimURL = `data:text/javascript;base64,${Buffer.from(shim).toString("base64")}`;
-const policyPath = join(dirname(fileURLToPath(import.meta.url)), "policies/sentinel-policies.mjs");
-const source = (await readFile(policyPath,"utf8")).replace('from "failproofai"', `from "${shimURL}"`);
-runtime.clearCustomHooks();
-await import(`data:text/javascript;base64,${Buffer.from(source).toString("base64")}`);
+const bundledPath = join(dirname(fileURLToPath(import.meta.url)), "policies/sentinel-policies.mjs");
+async function loadHooks(path, tag) {
+  const source = (await readFile(path,"utf8")).replace(/from\s+["']failproofai["']/g, `from "${shimURL}"`);
+  runtime.clearCustomHooks();
+  await import(`data:text/javascript;base64,${Buffer.from(source).toString("base64")}#${tag}`);
+  return [...runtime.getCustomHooks()];
+}
+const cloud = process.env.SENTINEL_POLICY_PATH ? JSON.parse(process.env.SENTINEL_POLICY_METADATA || "null") : null;
+if (process.env.SENTINEL_POLICY_PATH && (!cloud || !["observe","enforce"].includes(cloud.effect)))
+  throw new Error("Cloud policy metadata is required");
+const cloudHooks = cloud ? await loadHooks(process.env.SENTINEL_POLICY_PATH,"cloud") : null;
+const activeHooks = cloud?.effect === "enforce" ? cloudHooks : await loadHooks(bundledPath,"bundled");
 const expected = ["jev-input-safety", "jev-response-release", "tool-boundary", "activation-steering-boundary"];
 
-export async function evaluate(ctx, hooks = runtime.getCustomHooks()) {
+async function evaluateHooks(ctx, hooks) {
   if (expected.some(name => !hooks.some(h => h.name === name)))
     return {decision:"deny",reason:"Required policies are missing",error:true,policies:[]};
   const results = [];
@@ -36,6 +44,16 @@ export async function evaluate(ctx, hooks = runtime.getCustomHooks()) {
   if (!results.length) return {decision:"deny",reason:"No applicable policy",error:true,policies:[]};
   const decisive=results.find(x=>x.decision==="deny") ?? results.find(x=>x.decision==="instruct") ?? results[0];
   return {...decisive,policies:results,version:"sentinel-2"};
+}
+export async function evaluate(ctx, hooks = activeHooks) {
+  const result = await evaluateHooks(ctx, hooks);
+  if (!cloud) return result;
+  const metadata = {...cloud, runtime: "serverless-application-reconciler"};
+  if (cloud.effect === "observe") {
+    const observed = await evaluateHooks(ctx, cloudHooks);
+    return {...result, cloud_policy: metadata, observed: [observed], enforcement_scope: "bundled-with-cloud-observation"};
+  }
+  return {...result, cloud_policy: metadata, enforcement_scope: "cloud-managed-application"};
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   try {

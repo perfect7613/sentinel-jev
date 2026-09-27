@@ -112,13 +112,19 @@ async def evaluate(trace, event, tool=None, args=None, judgment=None):
                "payload": {"judgment": judgment}, "session": {"id": trace.id}}
     hook_id = uid()
     trace.emit("hook_triggered", hook_id=hook_id, hook_name="sentinel-policies", trigger_event=event, input=context)
+    from cloud_policies import snapshot, runtime_environment
+    if not hasattr(trace, "policy_snapshot"):
+        trace.policy_snapshot = await snapshot()
     proc = await asyncio.create_subprocess_exec("node", "/app/policy_runtime.mjs",
+                  env=runtime_environment(trace.policy_snapshot),
                   stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
     try:
         out, _ = await asyncio.wait_for(proc.communicate(json.dumps(context).encode()), timeout=10)
         result = json.loads(out)
         if proc.returncode or result.get("decision") not in {"allow", "deny", "instruct"}:
             raise ValueError("Invalid policy response")
+        from cloud_policies import mark_evaluated
+        mark_evaluated(trace.policy_snapshot, result)
     except BaseException:
         if proc.returncode is None:
             proc.kill()
@@ -126,7 +132,7 @@ async def evaluate(trace, event, tool=None, args=None, judgment=None):
         result = {"decision": "deny", "reason": "Policy engine unavailable", "error": True}
     trace.emit("hook_completed", hook_id=hook_id, hook_name="sentinel-policies",
                outcome="failed" if result.get("error") else "success", output=result,
-               judgment=judgment, action=tool, trigger_event=event, enforcement_scope="application-bundled")
+               judgment=judgment, action=tool, trigger_event=event, enforcement_scope=result.get("enforcement_scope", "application-bundled"))
     return result
 
 
@@ -231,12 +237,15 @@ async def chat(model, body, *, fixed_input_judgment=None):
     finally:
         trace.emit("agent_end", outcome=outcome, route=route, summary=answer, final_response=answer,
                    activation_steering_applied=applied, steering=steering_details, output_judgment=output_judgment, input_judgment=input_judgment,
-                   input_judgment_reused=fixed_input_judgment is not None, enforcement_scope="application-bundled")
+                   input_judgment_reused=fixed_input_judgment is not None,
+                   enforcement_scope=__import__("cloud_policies").enforcement_scope(getattr(trace,"policy_snapshot",None)),
+                   cloud_policy=__import__("cloud_policies").public_metadata(getattr(trace,"policy_snapshot",None)))
     receipt = await trace.deliver()
     return {"session_id": trace.id, "conversation_id": trace.conversation_id, "agent": agent,
             "route": route, "response": answer, "telemetry": receipt,
             "activation_steering_applied": applied, "steering": steering_details, "output_judgment":output_judgment, "input_judgment":input_judgment,
-            "input_judgment_reused":fixed_input_judgment is not None}
+            "input_judgment_reused":fixed_input_judgment is not None,
+            "cloud_policy":__import__("cloud_policies").public_metadata(getattr(trace,"policy_snapshot",None))}
 
 
 def make_api(model, volume):
@@ -270,6 +279,17 @@ def make_api(model, volume):
             return result
         except ValueError as exc:
             raise HTTPException(400, str(exc)) from None
+
+    @app.get("/policies")
+    async def policy_status():
+        from cloud_policies import snapshot, public_metadata, last_evaluated_deployment
+        try:
+            current = await snapshot(force=True)
+            return {"source": "cloud" if current else "bundled", **public_metadata(current),
+                    "last_evaluated_deployment":last_evaluated_deployment(),
+                    "refresh_seconds": 5, "activation": "pinned per request; refresh on next request"}
+        except Exception:
+            raise HTTPException(503, "Cloud policy unavailable; new unchecked requests are blocked") from None
 
     @app.get("/steering")
     async def steering_status():
@@ -376,6 +396,12 @@ def make_api(model, volume):
             event_file = home/"tools.jsonl"
             # The child receives only the gateway token, never Jev/Cloud credentials.
             child_env = {k:v for k,v in os.environ.items() if k in {"PATH","HOME","LANG","NODE_PATH"}}
+            from cloud_policies import snapshot, runtime_environment
+            try:
+                trace.policy_snapshot = await snapshot()
+                child_env.update(runtime_environment(trace.policy_snapshot))
+            except Exception:
+                raise HTTPException(503, "Cloud policy unavailable; Pi was not started") from None
             child_env.update({"PI_OFFLINE":"1","PI_SKIP_VERSION_CHECK":"1","PI_TELEMETRY":"0",
                 "PI_CODING_AGENT_DIR":str(home),"SENTINEL_API_TOKEN":os.environ["SENTINEL_API_TOKEN"],
                 "SENTINEL_PI_EVENTS":str(event_file),"SENTINEL_WORKSPACE":"/workspace"})

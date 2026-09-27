@@ -6,7 +6,7 @@ The subsequent [model-only follow-up](../evals/MODEL_ONLY_REPORT.md) adds the mi
 
 For the pitch, replace the original limitation about an untested raw arm with: **“Our model-only follow-up produced three Jev-flagged answers; both guarded arms produced zero, while all nine legitimate-task checks still passed. We have not yet demonstrated an extra benefit from steering.”**
 
-The material below describes the original paired pilot for historical clarity.
+The original-pilot section and its score tables preserve the historical paired experiment. The demo and pitch below include the subsequent model-only comparison.
 
 ## What we demonstrated in the original pilot
 
@@ -71,7 +71,7 @@ The credential-theft, fraud and privacy-abuse requests were refused before gener
 | `tool-boundary` | Permit named application actions and Pi reads whose resolved paths stay under `/workspace`. Deny shell, writes, unknown tools and outside/symlink-escape reads. | A convincing prompt does not give the agent permission to run arbitrary tools. |
 | `activation-steering-boundary` | Valid input judgment, approved ALLOW/REDIRECT route, permitted mode, and 0 < alpha ≤0.12. Refuse/clarify decisions cannot be overridden. | Steering gets permission too; it cannot turn a prohibited objective into an approved one. |
 
-If policies disagree, deny wins over instruct, which wins over allow. Missing policies, exceptions and timeouts stop unchecked execution. These are application-bundled policies; they are not native fleet policy deployments. Jev supplies the judgments; our dispatcher enforces the rules; FailproofAI's existing UI exposes the recorded evidence.
+If policies disagree, deny wins over instruct, which wins over allow. Missing policies, exceptions and timeouts stop unchecked execution. The current service loads these policies from its pinned Cloud assignment; the original evaluation used identical bundled source. See [the live editor workflow](cloud-policy-editor.md). Jev supplies the judgments; our dispatcher enforces the rules; FailproofAI's existing UI exposes the recorded evidence.
 
 Steering changes a hidden activation inside the model at layer 21. Our alpha 0.08 scales the added direction relative to the activation RMS; it does not mean an 8% safety improvement. `auto` steers only REDIRECT requests; `on` explicitly experiments on approved requests; the default is `off`. The vector is an experimental contrast learned from 12 synthetic pairs using `steering-vectors`.
 
@@ -107,7 +107,7 @@ Recorded input: prohibited 0.02, missing context 0.11, safe reframing 0.96 → R
 
 **2:10–2:40 — Show the evidence.** Open the existing FailproofAI dashboard: raw input/output scores, individual policy names and reasons, scores at enforcement. Show a session trace if available. If Cloud reads fail, use the committed `evals/results/refund-trace.json` and the actual dashboard screenshot, clearly labeled as recorded evidence. The packaging-time Cloud memory-limit failure is documented in `docs/evidence.md`.
 
-**2:40–3:00 — State results and limits.** 23 automated tests passed. Twelve synthetic cases passed with and without steering; three prohibited requests were refused in both. We have verified the pipeline and bounded intervention, not a measured safety uplift. Next: an independently judged comparison of unguarded, policy-only, and policy-plus-steering arms on a larger held-out corpus.
+**2:40–3:00 — State results and limits.** In the twelve-case comparison, Jev flagged 3/12 model-only answers versus 0/12 in either guarded arm. All three arms passed 9/9 legitimate-task text checks. This supports the guards on these cases; it does not demonstrate an additional steering benefit. Next: independent judging on a larger held-out corpus.
 
 Optional tool-policy demo: `npm test` includes shell denial, path confinement, missing-classifier denial, policy-exception denial, and steering-limit checks. Label this as automated test evidence, not a live adversarial benchmark.
 
@@ -119,7 +119,7 @@ Optional tool-policy demo: `npm test` includes shell denial, path confinement, m
 >
 > For approved requests, we can also experiment with bounded activation steering: a small change inside the model, with output checks still in place. In FailproofAI, we can inspect the raw scores, the policy decisions, and whether the intervention actually happened.
 >
-> In our twelve-case pilot, all three prohibited requests were refused and the legitimate tasks passed our checks. Steering ran in nine cases, but we are not claiming it improved safety yet: both arms passed. What we can demonstrate today is a reproducible system for examining that tradeoff—with real enforcement, visible evidence, and published results.
+> In our twelve-case comparison, the model-only arm produced three Jev-flagged answers; both guarded arms produced zero. All nine legitimate-task checks passed in every arm. We are not claiming an extra benefit from steering yet. The policies are editable in FailproofAI and connected to the running Modal service, so every published and assigned change can be traced to the version that actually ran.
 >
 > Sentinel Jev: every safety decision should come with evidence.
 
@@ -133,7 +133,7 @@ We have not evaluated Sentinel against Fable 5, and our small, less-capable mode
 
 - **Did you build a new classifier?** No. We use Jev and implement the routing, enforceable policies, observability, evaluation workflow and steering experiment around it.
 - **Did steering improve safety?** Not demonstrated in this pilot. It altered activations and five final responses while preserving these checks.
-- **Did the policies help?** They visibly refused three prohibited requests and constrained tools in tests. A measured improvement over the unguarded model remains untested.
+- **Did the policies help?** On this fixed set, Jev flagged 3/12 model-only answers versus 0/12 guarded answers, with 9/9 legitimate-task checks passing in each arm. Jev also supplies the guards, so this is not independent validation.
 - **Are these calibrated probabilities?** No. They are raw classifier scores used with explicit thresholds.
 - **Does a low score guarantee safety?** No. The classifier can make mistakes; the thresholds and pilot do not establish robustness.
-- **Why is only the laptop in native Enforcement?** Our Modal service enforces bundled application policies and emits traces. Native fleet enrollment is a separate integration.
+- **Why is only the laptop in native Enforcement?** The new connection now shows `sentinel-modal` separately in Enforcement. It pulls and verifies the assigned source and reports successful evaluation; it is a serverless application integration, not a system daemon.
