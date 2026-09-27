@@ -1,0 +1,15 @@
+{
+  "name": "sentinel-jev",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/policies.test.mjs"
+  },
+  "dependencies": {
+    "failproofai": "1.0.8-beta.0",
+    "@earendil-works/pi-coding-agent": "0.87.1"
+  },
+  "version": "0.2.0",
+  "description": "FailproofAI policies and Pi bridge for Sentinel Jev",
+  "license": "MIT"
+}

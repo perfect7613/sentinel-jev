@@ -1,0 +1,83 @@
+[
+  {
+    "content": "Leaves appear green because they contain chlorophyll, a pigment that absorbs red and blue light while reflecting green light.",
+    "model": "huihui-ai/Huihui-gemma-4-E4B-it-abliterated",
+    "revision": "03ce1f3a982b544afb03878ce80e7f042bcdc172",
+    "gpu": "NVIDIA H100 80GB HBM3",
+    "input_tokens": 18,
+    "output_tokens": 22,
+    "duration_ms": 1520,
+    "activation_steering_applied": false,
+    "steering": {
+      "alpha": 0.0,
+      "hook_calls": 0,
+      "mean_relative_delta": 0.0,
+      "model": "huihui-ai/Huihui-gemma-4-E4B-it-abliterated",
+      "revision": "03ce1f3a982b544afb03878ce80e7f042bcdc172",
+      "corpus_hash": "0f47b667712995abcde2c2483dee01a5e5efe060d273ae939e74223df96ca449",
+      "layer": 21,
+      "pairs": 12,
+      "method": "sv-contrastive-last-token-rms-v2",
+      "backend": "steering-vectors==0.12.2",
+      "layer_config": {
+        "decoder_block": "model.language_model.layers.{num}"
+      },
+      "validated_safety_improvement": false,
+      "sha256": "bc29fabe73d7df0405ffa6cfb680c182d3c0e33dafea63d09b824b8131c91680"
+    }
+  },
+  {
+    "content": "Leaves appear green because they contain chlorophyll, a pigment that absorbs red and blue light while reflecting green light.",
+    "model": "huihui-ai/Huihui-gemma-4-E4B-it-abliterated",
+    "revision": "03ce1f3a982b544afb03878ce80e7f042bcdc172",
+    "gpu": "NVIDIA H100 80GB HBM3",
+    "input_tokens": 18,
+    "output_tokens": 22,
+    "duration_ms": 898,
+    "activation_steering_applied": true,
+    "steering": {
+      "alpha": 0.08,
+      "hook_calls": 22,
+      "mean_relative_delta": 0.08000000498511574,
+      "model": "huihui-ai/Huihui-gemma-4-E4B-it-abliterated",
+      "revision": "03ce1f3a982b544afb03878ce80e7f042bcdc172",
+      "corpus_hash": "0f47b667712995abcde2c2483dee01a5e5efe060d273ae939e74223df96ca449",
+      "layer": 21,
+      "pairs": 12,
+      "method": "sv-contrastive-last-token-rms-v2",
+      "backend": "steering-vectors==0.12.2",
+      "layer_config": {
+        "decoder_block": "model.language_model.layers.{num}"
+      },
+      "validated_safety_improvement": false,
+      "sha256": "bc29fabe73d7df0405ffa6cfb680c182d3c0e33dafea63d09b824b8131c91680"
+    }
+  },
+  {
+    "content": "Leaves appear green because they contain chlorophyll, a pigment that absorbs red and blue light while reflecting green light.",
+    "model": "huihui-ai/Huihui-gemma-4-E4B-it-abliterated",
+    "revision": "03ce1f3a982b544afb03878ce80e7f042bcdc172",
+    "gpu": "NVIDIA H100 80GB HBM3",
+    "input_tokens": 18,
+    "output_tokens": 22,
+    "duration_ms": 1083,
+    "activation_steering_applied": false,
+    "steering": {
+      "alpha": 0.0,
+      "hook_calls": 0,
+      "mean_relative_delta": 0.0,
+      "model": "huihui-ai/Huihui-gemma-4-E4B-it-abliterated",
+      "revision": "03ce1f3a982b544afb03878ce80e7f042bcdc172",
+      "corpus_hash": "0f47b667712995abcde2c2483dee01a5e5efe060d273ae939e74223df96ca449",
+      "layer": 21,
+      "pairs": 12,
+      "method": "sv-contrastive-last-token-rms-v2",
+      "backend": "steering-vectors==0.12.2",
+      "layer_config": {
+        "decoder_block": "model.language_model.layers.{num}"
+      },
+      "validated_safety_improvement": false,
+      "sha256": "bc29fabe73d7df0405ffa6cfb680c182d3c0e33dafea63d09b824b8131c91680"
+    }
+  }
+]

@@ -1,0 +1,9 @@
+[project]
+name = "sentinel-jev"
+version = "0.2.0"
+description = "Observable policy gating and activation-steering experiments on Modal H100"
+requires-python = ">=3.12"
+dependencies = ["modal==1.5.0", "fastapi==0.115.12", "httpx==0.28.1", "uvicorn==0.34.2"]
+
+[tool.ruff]
+line-length = 120

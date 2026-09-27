@@ -1,0 +1,10 @@
+[
+  {
+    "session_id": "7fd46eeb19f64a30abdd0b775728a795",
+    "status": "accepted",
+    "http_status": 200,
+    "accepted": 6,
+    "expected": 6,
+    "skipped": 0
+  }
+]

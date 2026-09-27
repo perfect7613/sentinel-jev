@@ -1,0 +1,14 @@
+.venv/
+node_modules/
+__pycache__/
+.pytest_cache/
+*.pyc
+.env
+.env.*
+!.env.example
+results/
+!evals/results/
+!evals/results/**
+.DS_Store
+runtime-secrets.json
+client.local.json

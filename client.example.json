@@ -1,0 +1,4 @@
+{
+  "base_url": "https://YOUR-WORKSPACE--sentinel-api.modal.run",
+  "api_token": "REPLACE_WITH_YOUR_SENTINEL_API_TOKEN"
+}
