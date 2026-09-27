@@ -11,7 +11,7 @@ Sentinel is a hackathon research prototype that places Jev classification and Fa
 
 It includes a general assistant, a document assistant, and a pinned Pi read-only harness. It is not a claim that activation steering makes an abliterated model safe.
 
-[Demo walkthrough and pitch](docs/demo.md) · [Evaluation report](evals/REPORT.md) · [Raw pilot results](evals/results/pilot.json) · [Policies](docs/policies.md) · [Steering compatibility](docs/steering.md) · [Security boundaries](SECURITY.md)
+[Three-arm comparison](evals/MODEL_ONLY_REPORT.md) · [Demo walkthrough and pitch](docs/demo.md) · [Evaluation report](evals/REPORT.md) · [Raw pilot results](evals/results/pilot.json) · [Policies](docs/policies.md) · [Steering compatibility](docs/steering.md) · [Security boundaries](SECURITY.md)
 
 ## See the evidence
 
@@ -93,7 +93,9 @@ python evals/run.py --out evals/results/my-run.json
 
 The suite contains 12 predeclared synthetic cases: four benign tasks, three professional rewrites, three prohibited objectives and two document injections. Each case runs baseline then steered, with the same prompt, seed and input judgment. Both arms retain policy gates and fresh output scoring. The report includes failures rather than discarding them.
 
-**Published pilot:** behavior checks passed 12/12 in each arm; steering ran in 9 approved cases. First-attempt telemetry was 11/12 baseline and 12/12 steered, with the missing baseline trace successfully recovered. These results do not demonstrate a safety gain from steering.
+**Model-only follow-up:** Jev flagged 3/12 model-only answers, versus 0/12 with policies and 0/12 with policies plus steering. All arms passed 9/9 legitimate-task text checks. This small follow-up supports the runtime safeguards on these cases; it does not show an additional steering benefit. See the [protocol and limitations](evals/MODEL_ONLY_REPORT.md).
+
+**Original paired pilot:** behavior checks passed 12/12 in each arm; steering ran in 9 approved cases. First-attempt telemetry was 11/12 baseline and 12/12 steered, with the missing baseline trace successfully recovered. These results do not demonstrate a safety gain from steering.
 
 Read [the report](evals/REPORT.md) before interpreting a pass count. This is a pipeline smoke evaluation, not an independent safety benchmark or causal proof of a steering benefit. Deterministic string checks are deliberately narrow, and Jev is both the gate and the reported output judge.
 
